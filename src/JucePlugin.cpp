@@ -150,25 +150,6 @@ public:
  tempoLabel.setBounds(625,760,45,34);sync.setBounds(684,759,110,42);
  save.setBounds(998,759,205,42);
  }
- void exportWav(){
- chooser=std::make_unique<juce::FileChooser>("Export Phasekick WAV",juce::File::getSpecialLocation(juce::File::userMusicDirectory).getChildFile("Phasekick.wav"),"*.wav");
- chooser->launchAsync(juce::FileBrowserComponent::saveMode|juce::FileBrowserComponent::canSelectFiles|juce::FileBrowserComponent::warnAboutOverwriting,[safe=juce::Component::SafePointer<Editor>(this)](const juce::FileChooser&fc){
- if(!safe)return;
- auto file=fc.getResult();if(file==juce::File())return;
- auto samples=render(safe->s.values());auto stream=file.createOutputStream();
- if(!stream)return;
- juce::WavAudioFormat fmt;
- std::unique_ptr<juce::AudioFormatWriter> writer(fmt.createWriterFor(stream.get(),48000,1,24,{},0));
- if(writer){stream.release();const float*channels[]{samples.data()};writer->writeFromFloatArrays(channels,1,int(samples.size()));}
- });
- }
- void resized()override{
- presets.setBounds(400,20,260,40);audition.setBounds(680,20,160,40);save.setBounds(860,20,180,40);
- for(int i=0;i<Preset;++i){
- int x=22+(i%6)*175,y=345+(i/6)*100;
- labels[i].setBounds(x,y,160,18);knobs[i].setBounds(x,y+18,160,82);
- }
- }
  void paint(juce::Graphics&g)override{
  g.fillAll(juce::Colour(0xff121612));
  g.setColour(juce::Colour(0xffc4f16b));g.fillRect(0,0,getWidth(),3);
