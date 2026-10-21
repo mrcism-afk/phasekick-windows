@@ -1,0 +1,1 @@
+The original Phasekick DSP source is MIT-licensed. The Windows build downloads JUCE 8.0.12, licensed separately under AGPLv3 or a commercial JUCE licence. Before sharing the compiled plugin, review JUCE's licensing at https://juce.com/legal/. VST is a Steinberg trademark.
