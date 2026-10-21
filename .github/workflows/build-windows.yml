@@ -1,0 +1,39 @@
+name: Build Phasekick Windows VST3
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/**'
+      - 'CMakeLists.txt'
+      - '.github/workflows/build-windows.yml'
+permissions:
+  contents: read
+jobs:
+  windows-vst3:
+    runs-on: windows-2025
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure for Windows x64
+        shell: pwsh
+        run: cmake -S . -B build -A x64
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release --parallel 2
+      - name: Collect VST3 and standalone
+        shell: pwsh
+        run: |
+          $plugin = 'build/Phasekick_artefacts/Release/VST3/Phasekick.vst3'
+          $app = 'build/Phasekick_artefacts/Release/Standalone/Phasekick.exe'
+          if (-not (Test-Path $plugin)) { throw "VST3 not found at $plugin" }
+          if (-not (Test-Path $app)) { throw "EXE not found at $app" }
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          Copy-Item -Recurse -Path $plugin -Destination dist/
+          Copy-Item -Path $app -Destination dist/
+      - name: Publish downloadable Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Phasekick-Windows11-VST3
+          path: dist/
+          retention-days: 30
+          if-no-files-found: error
