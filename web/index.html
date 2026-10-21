@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#121612">
+  <title>Phasekick — Kick synthesizer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="brand" href="#" aria-label="Phasekick home"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M3 18h6l4-12 6 24 5-18 3 6h6"/></svg><span>phasekick<span class="version">01</span></span></a>
+      <div class="instrument-label">KICK SYNTHESIZER<span>DESIGNED TO HIT DIFFERENT.</span></div>
+      <button class="quiet" id="helpButton" title="Show keyboard shortcuts and controls">? <span>Quick guide</span></button>
+    </header>
+    <div class="workspace">
+      <aside class="sidebar">
+        <div class="sidebar-heading"><span>SOUND LIBRARY</span><span class="count">08</span></div>
+        <div class="library-filter"><span class="dot"></span> Factory collection <span>⌄</span></div>
+        <nav id="presets" aria-label="Factory presets"></nav>
+        <div class="library-bottom"><p>MAKE IT YOURS.</p><span>Start with a sound.<br>Find your own frequency.</span><div class="preset-files"><button id="savePreset">↓ Save preset</button><button id="loadPreset">↑ Load</button></div><input id="presetFile" type="file" accept=".json,application/json" hidden></div>
+        <div class="sidebar-footer"><span class="status-dot"></span> OFFLINE READY</div>
+      </aside>
+      <main>
+        <div class="patch-bar"><div><div class="eyebrow">CURRENT SOUND <span id="modified" hidden> / MODIFIED</span></div><h1 id="patchName">Deep Foundation</h1></div><div class="patch-actions"><button id="previous" class="icon-button" aria-label="Previous preset">←</button><button id="next" class="icon-button" aria-label="Next preset">→</button><div class="separator"></div><button id="randomize" class="quiet"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m2 5 4 0 8 10h4M14 12l4 3-4 3M2 15h4l8-10h4M14 2l4 3-4 3"/></svg>Mutate</button><button id="reset" class="quiet" title="Reset to the selected factory preset">↺</button></div></div>
+        <section class="visualizer" aria-label="Kick waveform and envelopes">
+          <div class="scope-toolbar"><div class="scope-tabs" role="tablist" aria-label="Display"><button role="tab" aria-selected="true" class="active" data-view="wave">Waveform</button><button role="tab" aria-selected="false" data-view="pitch">Pitch envelope</button><button role="tab" aria-selected="false" data-view="amp">Amp envelope</button></div><span class="scope-legend"><i></i><span id="scopeLabel">OUTPUT SIGNAL</span></span></div>
+          <div class="scope-wrap"><canvas id="scope" aria-label="Rendered kick waveform"></canvas><span class="scope-axis" id="scopeAxis">1.0<br><br>0<br><br>−1.0</span><div id="scopeHint" class="scope-hint">PHASE-LOCKED / MONO</div></div>
+          <div class="scope-footer"><span>0 ms</span><span id="scopeMiddle">240 ms</span><span id="scopeEnd">480 ms</span></div>
+          <div class="sound-stats"><span><i class="small-dot"></i><span id="noteName">G1</span><span id="frequency">49.0 Hz</span></span><span id="duration">480 ms</span><span id="peak">−6.0 dBFS</span><span class="render-status" id="renderStatus">READY</span></div>
+        </section>
+        <div class="parameters" id="parameters"></div>
+        <div class="tip"><span>↗</span><span id="description">A weighty low end with a clean, focused attack.</span><span class="tip-right">DRAG TO SHAPE. LISTEN TO FEEL.</span></div>
+      </main>
+    </div>
+    <footer class="transport">
+      <div class="play-controls"><button id="audition" class="play-button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 9 6-9 6z"/></svg><span>Audition</span><kbd>SPACE</kbd></button><button id="loop" class="loop-button" aria-pressed="false" title="Loop on every beat"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15 6H6a4 4 0 0 0-4 4M13 3l3 3-3 3M5 14h9a4 4 0 0 0 4-4M7 11l-3 3 3 3"/></svg><span>Loop</span></button><div class="tempo-control"><input id="bpm" type="number" min="40" max="240" value="128" aria-label="Loop tempo"><span>BPM</span></div><button id="syncLength" title="Set kick length to one sixteenth note at the current tempo">1/16 length</button></div>
+      <div class="export-controls"><span class="export-format">48 kHz <span>/</span> 24-bit WAV</span><button id="export" class="export-button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10M6 8l4 4 4-4M3 13v4h14v-4"/></svg>Export kick <span>↗</span></button></div>
+    </footer>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="help"><form method="dialog"><button class="dialog-close" aria-label="Close guide">×</button><div class="eyebrow">GET INTO THE GROOVE</div><h2>A little control.<br>A lot of impact.</h2><p><strong>Space</strong> plays a kick. <strong>Loop</strong> repeats on each beat at your tempo. Use headphones or monitors to hear the low end.</p><p>Drag a knob up or down. Hold <strong>Shift</strong> for fine adjustment. Double-click a knob to reset it. Click its number to type a value. Focus a knob and use arrow keys for keyboard control.</p><p>The <strong>pitch and amp envelope</strong> views have draggable handles. The amp handles control hold, sustain, and length; attack remains on its knob. A note-off never cuts the tail: every kick is a one-shot.</p><p><strong>Mutate</strong> nudges the current sound. <strong>Save preset</strong> writes a JSON you can load later. Your last sound is remembered in this browser.</p><p><strong>Export kick</strong> saves the current sound as a mono, 48 kHz, 24-bit WAV. The browser audition tool runs locally; the native VST3 is in the project’s artifacts folder.</p><button class="export-button">Let’s make a kick →</button></form></dialog>
+  <script src="synth.js"></script><script src="app.js"></script>
+</body>
+</html>
